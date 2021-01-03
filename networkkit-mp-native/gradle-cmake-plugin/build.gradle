@@ -1,0 +1,24 @@
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven-publish'
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+group = "com.huawei.hms.network"
+version = "0.0.1"
+
+repositories {
+    jcenter()
+}
+
+gradlePlugin {
+    plugins {
+        cmakePlugin {
+            id = 'com.huawei.hms.network.gradle-cmake-plugin'
+            implementationClass = 'com.huawei.hms.network.thirdparty.plugin.CMakePlugin'
+        }
+    }
+}

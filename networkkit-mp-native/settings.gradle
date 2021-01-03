@@ -1,0 +1,3 @@
+include ':gradle-cmake-plugin'
+include ':app'
+rootProject.name = "networkkit-mp"
