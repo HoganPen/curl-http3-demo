@@ -1,0 +1,50 @@
+【编译OpenSSL】
+perl Configure enable-tls1_3 VC-WIN64A --prefix=G:\build\OpenSSL
+上面的一行指令存在一个bug, 是ActivePerl内部的错误，需要注释掉config.pm中第400行的函数内容， 不要注释函数
+vcvars64.bat
+nmake
+nmake install
+
+【编译nghttp3】
+md cmake-build-release
+cd cmake-build-release
+vcvars64.bat
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=G:\build\nghttp3 -DENABLE_LIB_ONLY=ON -G "CodeBlocks - NMake Makefiles" ../
+cmake.exe --build ./ --target install
+
+需要配置的Cmake -D参数：
+-DCMAKE_INSTALL_PREFIX=G:\build\nghttp3
+-DENABLE_LIB_ONLY=ON
+
+【编译ngtcp2】
+md cmake-build-release
+cd cmake-build-release
+vcvars64.bat
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=G:\build\ngtcp2 -DENABLE_OPENSSL=ON -DOPENSSL_ROOT_DIR=G:\build\OpenSSL -DLIBNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib -DLIBNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include -G "CodeBlocks - NMake Makefiles"  ../
+cmake.exe --build ./ --target install
+
+需要配置的Cmake -D参数：
+-DCMAKE_INSTALL_PREFIX=G:\build\ngtcp2
+-DENABLE_OPENSSL=ON
+-DOPENSSL_ROOT_DIR=G:\build\OpenSSL
+-DLIBNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib
+-DLIBNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include
+
+【编译curl】
+md cmake-build-release
+cd cmake-build-release
+vcvars64.bat
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_USE_OPENSSL=ON -DNGTCP2_STATICLIB=ON -DOPENSSL_ROOT_DIR=G:\build\OpenSSL -DUSE_NGTCP2=ON -DUSE_OPENSSL=ON -DNGTCP2_LIBRARY=G:\build\ngtcp2\lib\ngtcp2.lib -DNGTCP2_INCLUDE_DIR=G:\build\ngtcp2\include -DNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib -DNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include -DCMAKE_INSTALL_PREFIX=G:\build\libcurl -G "CodeBlocks - NMake Makefiles" ../
+cmake.exe --build ./ --target install
+
+需要配置的Cmake -D参数：
+-DCMAKE_USE_OPENSSL=ON
+-DNGTCP2_STATICLIB=ON
+-DOPENSSL_ROOT_DIR=G:\build\OpenSSL
+-DUSE_NGTCP2=ON
+-DUSE_OPENSSL=ON
+-DNGTCP2_LIBRARY=G:\build\ngtcp2\lib\ngtcp2.lib
+-DNGTCP2_INCLUDE_DIR=G:\build\ngtcp2\include
+-DNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib
+-DNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include
+-DCMAKE_INSTALL_PREFIX=G:\build\libcurl
