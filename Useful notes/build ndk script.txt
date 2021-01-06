@@ -1,0 +1,58 @@
+【clion ndk 环境配置】
+一、 Clion中Toolchains需要配置为MinGW， Make, C Compiler, C++ Compiler Debugger配置如下：
+D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061
+D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061\prebuilt\windows-x86_64\bin\make.exe
+D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe
+D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe
+D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061\prebuilt\windows-x86_64\bin\gdb.exe
+二、 CMake配置中，其CMake options对Android NDK的-D参数配置如下：
+-DCMAKE_TOOLCHAIN_FILE="D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061\build\cmake\android.toolchain.cmake"
+-DCMAKE_SYSTEM_NAME=Android
+-DANDROID_ABI=arm64-v8a
+-DCMAKE_ANDROID_NDK="D:\Users\Administrator\AppData\Local\Android\Sdk\ndk\22.0.7026061"
+-DCMAKE_SYSTEM_VERSION=24
+-DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang
+
+【编译OpenSSL】
+OpenSSL的安卓NDK版本编译不能在windows上编译，因此只能在Linux上编译好放置到G:\build\ngtcp2\arm64-v8a目录下
+
+【编译nghttp3】
+md cmake-build-release-mingw
+cd cmake-build-release-mingw
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=G:\build\nghttp3 -DENABLE_LIB_ONLY=ON -G "CodeBlocks - NMake Makefiles" ../
+cmake.exe --build ./ --target install
+
+需要追加配置的Cmake -D参数：
+-DCMAKE_INSTALL_PREFIX=G:\build\nghttp3\arm64-v8a
+-DENABLE_LIB_ONLY=ON
+
+【编译ngtcp2】
+md cmake-build-release-mingw
+cd cmake-build-release-mingw
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=G:\build\ngtcp2 -DENABLE_OPENSSL=ON -DOPENSSL_ROOT_DIR=G:\build\OpenSSL -DLIBNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib -DLIBNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include -G "CodeBlocks - NMake Makefiles"  ../
+cmake.exe --build ./ --target install
+
+需要追加配置的Cmake -D参数：
+-DCMAKE_INSTALL_PREFIX=G:\build\ngtcp2\arm64-v8a
+-DENABLE_OPENSSL=ON
+-DOPENSSL_ROOT_DIR=G:\build\OpenSSL\arm64-v8a
+-DLIBNGHTTP3_LIBRARY=G:\build\nghttp3\arm64-v8a\lib\nghttp3.lib
+-DLIBNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\arm64-v8a\include
+
+【编译curl】
+md cmake-build-release-mingw
+cd cmake-build-release-mingw
+cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_USE_OPENSSL=ON -DNGTCP2_STATICLIB=ON -DOPENSSL_ROOT_DIR=G:\build\OpenSSL -DUSE_NGTCP2=ON -DUSE_OPENSSL=ON -DNGTCP2_LIBRARY=G:\build\ngtcp2\lib\ngtcp2.lib -DNGTCP2_INCLUDE_DIR=G:\build\ngtcp2\include -DNGHTTP3_LIBRARY=G:\build\nghttp3\lib\nghttp3.lib -DNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\include -DCMAKE_INSTALL_PREFIX=G:\build\libcurl -G "CodeBlocks - NMake Makefiles" ../
+cmake.exe --build ./ --target install
+
+需要追加配置的Cmake -D参数：
+-DCMAKE_USE_OPENSSL=ON
+-DNGTCP2_STATICLIB=ON
+-DOPENSSL_ROOT_DIR=G:\build\OpenSSL\arm64-v8a
+-DUSE_NGTCP2=ON
+-DUSE_OPENSSL=ON
+-DNGTCP2_LIBRARY=G:\build\ngtcp2\arm64-v8a\lib\ngtcp2.lib
+-DNGTCP2_INCLUDE_DIR=G:\build\ngtcp2\arm64-v8a\include
+-DNGHTTP3_LIBRARY=G:\build\nghttp3\arm64-v8a\lib\nghttp3.lib
+-DNGHTTP3_INCLUDE_DIR=G:\build\nghttp3\arm64-v8a\include
+-DCMAKE_INSTALL_PREFIX=G:\build\libcurl\arm64-v8a
