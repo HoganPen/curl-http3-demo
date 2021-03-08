@@ -1,9 +1,11 @@
-【编译OpenSSL】
-perl Configure enable-tls1_3 VC-WIN64A --prefix=G:\build\OpenSSL
+【编译OpenSSL】-fPIC no-shared
+perl Configure enable-tls1_3 VC-WIN64A --prefix=E:\build\win-x64\OpenSSL
 上面的一行指令存在一个bug, 是ActivePerl内部的错误，需要注释掉config.pm中第400行的函数内容， 不要注释函数
 vcvars64.bat
 nmake
 nmake install
+
+perl Configure enable-tls1_3 android-arm64 -D__ANDROID_API__=29 --prefix=E:\build\OpenSSL\1.1.1g-quic-draft-32\android-arm64-v8a\shared
 
 【编译nghttp3】
 md cmake-build-release
